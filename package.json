@@ -1,0 +1,25 @@
+{
+  "name": "bangjeje-framework",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.20.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.9.6",
+    "turbo": "latest"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue,json,css,md}": [
+      "prettier --write"
+    ]
+  }
+}
