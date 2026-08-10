@@ -1,5 +1,9 @@
 {
   "name": "@bangjeje/tsconfig",
   "version": "1.0.0",
-  "license": "MIT"
+  "license": "MIT",
+  "exports": {
+    "./base.json": "./base.json",
+    "./vue.json": "./vue.json"
+  }
 }

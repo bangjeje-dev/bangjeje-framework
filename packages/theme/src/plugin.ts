@@ -1,7 +1,7 @@
 import type { App, Plugin } from "vue";
 import { ref, watchEffect } from "vue";
 import { useBangjejeConfig } from "@bangjeje/core";
-import type { BangjejeThemeOptions, ThemeContext } from "./types";
+import type { BangjejeThemeOptions, ThemeContext, ThemeDefinition } from "./types";
 import { BangjejeThemeKey } from "./composables/useTheme";
 import { applyThemeVariables } from "./utils/css-variables";
 
@@ -29,7 +29,7 @@ export const BangjejeTheme: Plugin = {
 
     // 2. Setup lightweight reactive state
     const activeTheme = ref(initialTheme);
-    const themes = {
+    const themes: Record<string, ThemeDefinition> = {
       light: builtinLightTheme,
       ...(options?.themes || {}),
     };
