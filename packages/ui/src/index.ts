@@ -1,1 +1,3 @@
-export const name = "@bangjeje/ui";
+export * from "./components/button";
+export * from "./components/input";
+export * from "./composables";
