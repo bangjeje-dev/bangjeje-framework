@@ -9,8 +9,8 @@ import type { ThemeContext } from "../src";
 describe("BangjejeTheme Architecture", () => {
   beforeEach(() => {
     // Clean up DOM before each test
-    document.documentElement.style.removeProperty("--bjj-color-primary");
-    document.documentElement.style.removeProperty("--bjj-color-background");
+    document.documentElement.style.removeProperty("--bjj-colors-primary");
+    document.documentElement.style.removeProperty("--bjj-colors-background");
   });
 
   it("should initialize with default light theme if no BangjejeUI config is provided", () => {
@@ -90,8 +90,8 @@ describe("BangjejeTheme Architecture", () => {
     // Let's use a microtask delay to ensure watchEffect has run
     await Promise.resolve();
 
-    expect(document.documentElement.style.getPropertyValue("--bjj-color-primary")).toBe("#ffffff");
-    expect(document.documentElement.style.getPropertyValue("--bjj-color-background")).toBe(
+    expect(document.documentElement.style.getPropertyValue("--bjj-colors-primary")).toBe("#ffffff");
+    expect(document.documentElement.style.getPropertyValue("--bjj-colors-background")).toBe(
       "#000000"
     );
 
@@ -99,11 +99,11 @@ describe("BangjejeTheme Architecture", () => {
     themeContext!.setTheme("enterprise");
     await Promise.resolve(); // wait for watchEffect
 
-    expect(document.documentElement.style.getPropertyValue("--bjj-color-primary")).toBe("#123456");
+    expect(document.documentElement.style.getPropertyValue("--bjj-colors-primary")).toBe("#123456");
     // background property should remain #000000 because 'enterprise' didn't define it,
     // and standard CSS style object retains old properties unless explicitly removed.
     // In a real scenario, we might clear previous styles, but for this basic proof, it's fine.
-    expect(document.documentElement.style.getPropertyValue("--bjj-color-background")).toBe(
+    expect(document.documentElement.style.getPropertyValue("--bjj-colors-background")).toBe(
       "#000000"
     );
     expect(themeContext?.activeTheme.value).toBe("enterprise");
@@ -134,9 +134,9 @@ describe("BangjejeTheme Architecture", () => {
 
     await Promise.resolve(); // Wait for watchEffect
 
-    expect(document.documentElement.style.getPropertyValue("--bjj-color-primary")).toBe("#0052cc");
-    expect(document.documentElement.style.getPropertyValue("--bjj-color-background")).toBe(
-      "#ffffff"
+    expect(document.documentElement.style.getPropertyValue("--bjj-colors-primary")).toBe("#2563EB");
+    expect(document.documentElement.style.getPropertyValue("--bjj-colors-background")).toBe(
+      "#FFFFFF"
     );
   });
 

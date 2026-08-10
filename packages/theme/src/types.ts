@@ -1,9 +1,6 @@
-export interface ThemeDefinition {
-  colors?: {
-    primary?: string;
-    background?: string;
-  };
-}
+import type { ThemeOverrides } from "@bangjeje/tokens";
+
+export type ThemeDefinition = ThemeOverrides;
 
 export interface BangjejeThemeOptions {
   themes?: Record<string, ThemeDefinition>;

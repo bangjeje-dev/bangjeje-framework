@@ -5,11 +5,39 @@ import type { BangjejeThemeOptions, ThemeContext, ThemeDefinition } from "./type
 import { BangjejeThemeKey } from "./composables/useTheme";
 import { applyThemeVariables } from "./utils/css-variables";
 
+import {
+  primitiveColors,
+  primitiveTypography,
+  primitiveSpacing,
+  primitiveRadius,
+  primitiveShadows,
+  primitiveBreakpoints,
+  primitiveZIndex,
+} from "@bangjeje/tokens";
+
 const builtinLightTheme: ThemeDefinition = {
   colors: {
-    primary: "#0052cc",
-    background: "#ffffff",
+    primary: primitiveColors.blue[600],
+    background: primitiveColors.white,
+    surface: primitiveColors.white,
+    text: primitiveColors.gray[900],
+    border: primitiveColors.gray[200],
+    danger: primitiveColors.red[600],
+    success: primitiveColors.green[600],
+    warning: primitiveColors.yellow[500],
   },
+  typography: {
+    fontFamily: primitiveTypography.fontFamily,
+    fontSize: primitiveTypography.fontSize,
+    fontWeight: primitiveTypography.fontWeight,
+    lineHeight: primitiveTypography.lineHeight,
+    letterSpacing: primitiveTypography.letterSpacing,
+  },
+  spacing: primitiveSpacing,
+  radius: primitiveRadius,
+  shadows: primitiveShadows,
+  breakpoints: primitiveBreakpoints,
+  zIndex: primitiveZIndex,
 };
 
 export const BangjejeTheme: Plugin = {

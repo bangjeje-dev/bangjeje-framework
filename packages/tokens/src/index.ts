@@ -1,1 +1,2 @@
-export const name = "@bangjeje/tokens";
+export * from "./primitives";
+export * from "./schema";

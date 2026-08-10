@@ -8,8 +8,6 @@ export default defineConfig({
       ignoreDeprecations: "6.0",
     },
   },
-  splitting: false,
-  sourcemap: true,
   clean: true,
-  external: ["vue", "@bangjeje/core"],
+  treeshake: true,
 });

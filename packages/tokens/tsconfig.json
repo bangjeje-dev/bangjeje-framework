@@ -1,5 +1,5 @@
 {
-  "extends": "@bangjeje/tsconfig/vue.json",
+  "extends": "@bangjeje/tsconfig/base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

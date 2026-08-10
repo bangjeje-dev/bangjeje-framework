@@ -1,20 +1,28 @@
 import type { ThemeDefinition } from "../types";
 
 /**
- * Transforms a ThemeDefinition object into CSS variables.
- * For Sprint 2, this is a basic implementation to prove the architecture.
+ * Transforms a ThemeDefinition object into CSS variables via automatic flattening.
  */
 export function applyThemeVariables(themeDef: ThemeDefinition | undefined): void {
   if (!themeDef || typeof document === "undefined") return;
 
   const root = document.documentElement;
 
-  if (themeDef.colors) {
-    if (themeDef.colors.primary) {
-      root.style.setProperty("--bjj-color-primary", themeDef.colors.primary);
+  const flatten = (obj: Record<string, unknown>, prefix = "--bjj") => {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const val = obj[key];
+        const kebabKey = key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, "$1-$2").toLowerCase();
+        const newPrefix = `${prefix}-${kebabKey}`;
+
+        if (typeof val === "object" && val !== null) {
+          flatten(val, newPrefix);
+        } else if (val !== undefined && val !== null) {
+          root.style.setProperty(newPrefix, String(val));
+        }
+      }
     }
-    if (themeDef.colors.background) {
-      root.style.setProperty("--bjj-color-background", themeDef.colors.background);
-    }
-  }
+  };
+
+  flatten(themeDef);
 }
