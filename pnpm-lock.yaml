@@ -140,7 +140,27 @@ importers:
 
   packages/shared: {}
 
-  packages/theme: {}
+  packages/theme:
+    dependencies:
+      "@bangjeje/core":
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      "@bangjeje/tsconfig":
+        specifier: workspace:*
+        version: link:../../tooling/tsconfig
+      jsdom:
+        specifier: ^30.0.1
+        version: 30.0.1
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.26)(supports-color@7.2.0)(typescript@6.0.3)(yaml@2.9.0)
+      vitest:
+        specifier: ^2.1.3
+        version: 2.1.9(@types/node@24.13.3)(jsdom@30.0.1)(lightningcss@1.33.0)(supports-color@7.2.0)
+      vue:
+        specifier: ^3.5.40
+        version: 3.5.41(typescript@6.0.3)
 
   packages/tokens: {}
 
