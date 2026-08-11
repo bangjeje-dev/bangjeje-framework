@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, inject, useId } from "vue";
 import type { CheckboxProps, CheckboxEmits } from "./checkbox";
 import { useFormControl } from "../../composables/use-form-control";
+import { CheckboxGroupContextKey } from "../../composables/use-choice-group";
 
 defineOptions({
   name: "BjjCheckbox",
@@ -19,46 +20,93 @@ const props = withDefaults(defineProps<CheckboxProps>(), {
 });
 const emit = defineEmits<CheckboxEmits>();
 
+const groupContext = inject(CheckboxGroupContextKey, null);
 const formControl = useFormControl(props);
 
-const internalValue = computed({
-  get: () => props.modelValue,
-  set: (val) => {
-    emit("update:modelValue", val);
-    emit("change", val);
-  },
+// ID Isolation: Local Prop > Leaf Fallback. NEVER use FormGroup/Group ID.
+const fallbackId = useId();
+const fieldId = computed(() => props.id || `bjj-checkbox-${fallbackId}`);
+
+const mergedDisabled = computed(() => {
+  if (props.disabled !== undefined) return props.disabled;
+  if (groupContext && groupContext.disabled.value !== undefined) return groupContext.disabled.value;
+  return formControl.disabled.value;
 });
 
-const isChecked = computed(() => {
-  if (Array.isArray(internalValue.value)) {
-    return internalValue.value.includes(props.value);
-  }
-  return !!internalValue.value;
+const mergedRequired = computed(() => {
+  if (props.required !== undefined) return props.required;
+  if (groupContext && groupContext.required.value !== undefined) return groupContext.required.value;
+  return formControl.required.value;
 });
+
+const mergedError = computed(() => {
+  if (props.error !== undefined) return props.error;
+  if (groupContext && groupContext.error.value !== undefined) return groupContext.error.value;
+  return formControl.error.value;
+});
+
+const hasError = computed(() => !!mergedError.value);
+
+const isChecked = computed(() => {
+  if (groupContext) {
+    const groupVal = groupContext.modelValue.value;
+    if (Array.isArray(groupVal)) {
+      return groupVal.includes(props.value);
+    }
+    return false;
+  }
+
+  if (Array.isArray(props.modelValue)) {
+    return props.modelValue.includes(props.value);
+  }
+  return !!props.modelValue;
+});
+
+const handleChange = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+  const checked = target.checked;
+
+  if (groupContext) {
+    groupContext.changeEvent(props.value, checked);
+  } else {
+    if (Array.isArray(props.modelValue)) {
+      const newValue = [...props.modelValue];
+      const index = newValue.indexOf(props.value);
+      if (checked && index === -1) newValue.push(props.value);
+      if (!checked && index !== -1) newValue.splice(index, 1);
+      emit("update:modelValue", newValue);
+      emit("change", newValue);
+    } else {
+      emit("update:modelValue", checked);
+      emit("change", checked);
+    }
+  }
+};
 </script>
 
 <template>
   <label
     class="bjj-checkbox"
     :class="{
-      'is-disabled': formControl.disabled.value,
+      'is-disabled': mergedDisabled,
       'is-checked': isChecked,
-      'has-error': formControl.hasError.value,
-      'is-required': formControl.required.value,
+      'has-error': hasError,
+      'is-required': mergedRequired,
     }"
   >
     <input
-      :id="formControl.id.value"
-      v-model="internalValue"
+      :id="fieldId"
+      :checked="isChecked"
       type="checkbox"
       class="bjj-checkbox__input"
-      :disabled="formControl.disabled.value"
-      :required="formControl.required.value"
-      :aria-disabled="formControl.disabled.value ? 'true' : undefined"
-      :aria-invalid="formControl.hasError.value ? 'true' : undefined"
-      :aria-describedby="formControl.hasError.value ? formControl.messageId.value : undefined"
+      :disabled="mergedDisabled"
+      :required="mergedRequired"
+      :aria-disabled="mergedDisabled ? 'true' : undefined"
+      :aria-invalid="hasError ? 'true' : undefined"
+      :aria-describedby="hasError ? formControl.messageId.value : undefined"
       :value="value"
       v-bind="$attrs"
+      @change="handleChange"
     />
     <span class="bjj-checkbox__facade">
       <!-- CSS will render the checkmark -->

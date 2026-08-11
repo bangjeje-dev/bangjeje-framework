@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, inject, useId } from "vue";
 import type { RadioProps, RadioEmits } from "./radio";
 import { useFormControl } from "../../composables/use-form-control";
+import { RadioGroupContextKey } from "../../composables/use-choice-group";
 
 defineOptions({
   name: "BjjRadio",
@@ -20,13 +21,52 @@ const props = withDefaults(defineProps<RadioProps>(), {
 });
 const emit = defineEmits<RadioEmits>();
 
+const groupContext = inject(RadioGroupContextKey, null);
 const formControl = useFormControl(props);
 
+// ID Isolation: Local Prop > Leaf Fallback. NEVER use FormGroup/Group ID.
+const fallbackId = useId();
+const fieldId = computed(() => props.id || `bjj-radio-${fallbackId}`);
+
+// Name Precedence: Group > Local > Default
+const fieldName = computed(() => {
+  if (groupContext) return groupContext.name.value;
+  return props.name || undefined;
+});
+
+// State Precedence: Local > Group > FormGroup > Default
+const mergedDisabled = computed(() => {
+  if (props.disabled !== undefined) return props.disabled;
+  if (groupContext && groupContext.disabled.value !== undefined) return groupContext.disabled.value;
+  return formControl.disabled.value;
+});
+
+const mergedRequired = computed(() => {
+  if (props.required !== undefined) return props.required;
+  if (groupContext && groupContext.required.value !== undefined) return groupContext.required.value;
+  return formControl.required.value;
+});
+
+const mergedError = computed(() => {
+  if (props.error !== undefined) return props.error;
+  if (groupContext && groupContext.error.value !== undefined) return groupContext.error.value;
+  return formControl.error.value;
+});
+
+const hasError = computed(() => !!mergedError.value);
+
 const internalValue = computed({
-  get: () => props.modelValue,
+  get: () => {
+    if (groupContext) return groupContext.modelValue.value;
+    return props.modelValue;
+  },
   set: (val) => {
-    emit("update:modelValue", val);
-    emit("change", val);
+    if (groupContext) {
+      groupContext.changeEvent(val);
+    } else {
+      emit("update:modelValue", val);
+      emit("change", val);
+    }
   },
 });
 
@@ -37,23 +77,23 @@ const isChecked = computed(() => internalValue.value === props.value);
   <label
     class="bjj-radio"
     :class="{
-      'is-disabled': formControl.disabled.value,
+      'is-disabled': mergedDisabled,
       'is-checked': isChecked,
-      'has-error': formControl.hasError.value,
-      'is-required': formControl.required.value,
+      'has-error': hasError,
+      'is-required': mergedRequired,
     }"
   >
     <input
-      :id="formControl.id.value"
+      :id="fieldId"
       v-model="internalValue"
       type="radio"
       class="bjj-radio__input"
-      :name="name || undefined"
-      :disabled="formControl.disabled.value"
-      :required="formControl.required.value"
-      :aria-disabled="formControl.disabled.value ? 'true' : undefined"
-      :aria-invalid="formControl.hasError.value ? 'true' : undefined"
-      :aria-describedby="formControl.hasError.value ? formControl.messageId.value : undefined"
+      :name="fieldName"
+      :disabled="mergedDisabled"
+      :required="mergedRequired"
+      :aria-disabled="mergedDisabled ? 'true' : undefined"
+      :aria-invalid="hasError ? 'true' : undefined"
+      :aria-describedby="hasError ? formControl.messageId.value : undefined"
       :value="value"
       v-bind="$attrs"
     />

@@ -13,7 +13,7 @@ describe("BjjCheckbox", () => {
     expect(wrapper.exists()).toBe(true);
     const input = wrapper.find("input");
     expect(input.attributes("type")).toBe("checkbox");
-    expect(input.attributes("id")).toMatch(/^bjj-input-v-\d+$/);
+    expect(input.attributes("id")).toMatch(/^bjj-checkbox-v-\d+$/);
   });
 
   it("handles boolean v-model correctly", async () => {

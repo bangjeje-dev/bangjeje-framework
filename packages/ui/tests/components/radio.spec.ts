@@ -13,7 +13,7 @@ describe("BjjRadio", () => {
     expect(wrapper.exists()).toBe(true);
     const input = wrapper.find("input");
     expect(input.attributes("type")).toBe("radio");
-    expect(input.attributes("id")).toMatch(/^bjj-input-v-\d+$/);
+    expect(input.attributes("id")).toMatch(/^bjj-radio-v-\d+$/);
   });
 
   it("handles selected value correctly", async () => {

@@ -6,4 +6,6 @@ export * from "./components/form-message";
 export * from "./components/checkbox";
 export * from "./components/radio";
 export * from "./components/switch";
+export * from "./components/radio-group";
+export * from "./components/checkbox-group";
 export * from "./composables";
