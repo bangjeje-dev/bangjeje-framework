@@ -10,4 +10,5 @@ export * from "./components/radio-group";
 export * from "./components/checkbox-group";
 export * from "./components/dialog";
 export * from "./components/popover";
+export * from "./components/select";
 export * from "./composables";

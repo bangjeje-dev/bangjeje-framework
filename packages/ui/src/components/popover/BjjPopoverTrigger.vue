@@ -24,7 +24,7 @@ onMounted(() => {
   context.triggerRef.value = triggerEl.value;
 });
 
-const handleToggle = (e: Event) => {
+const handleToggle = () => {
   if (props.disabled) return;
   context.toggle();
 };

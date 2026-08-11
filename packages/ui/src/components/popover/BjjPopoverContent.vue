@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { inject, ref, onMounted, nextTick, watch } from "vue";
+import { inject, ref, nextTick, watch } from "vue";
 import { popoverInjectionKey } from "./popover";
 import { useFloating } from "../../composables/use-floating";
 import { useNamespace } from "../../composables/use-namespace";
 
 defineOptions({
   name: "BjjPopoverContent",
+  inheritAttrs: false,
 });
 
 const ns = useNamespace("popover__content");
@@ -45,6 +46,7 @@ watch(context.isOpen, (val) => {
       role="region"
       style="position: fixed; z-index: var(--bjj-z-index-popover, 1030)"
       data-bjj-popover-part
+      v-bind="$attrs"
     >
       <slot />
     </div>

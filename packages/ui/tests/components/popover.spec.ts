@@ -102,7 +102,6 @@ describe("BjjPopover", () => {
 
   it("renders correctly with proper ARIA attributes", async () => {
     const wrapper = mount(TestComponent, { attachTo: document.body });
-    const trigger = wrapper.find("#trigger");
     const triggerWrapper = wrapper.findComponent(BjjPopoverTrigger);
 
     expect(triggerWrapper.attributes("aria-expanded")).toBe("false");
@@ -209,7 +208,7 @@ describe("BjjPopover", () => {
 
   it("does not dismiss when clicking trigger or content", async () => {
     const wrapper = mount(TestComponent, { attachTo: document.body });
-    const trigger = wrapper.findComponent(BjjPopoverTrigger).element;
+    wrapper.find(".bjj-popover__trigger");
 
     await wrapper.findComponent(BjjPopoverTrigger).trigger("click");
     await nextTick();
