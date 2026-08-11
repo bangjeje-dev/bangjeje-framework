@@ -1,28 +1,35 @@
 <script setup lang="ts">
-import { computed, useId } from "vue";
+import { computed } from "vue";
 import { useNamespace } from "../../composables/use-namespace";
+import { useFormControl } from "../../composables/use-form-control";
 import type { InputProps, InputEmits } from "./input";
 
 const props = withDefaults(defineProps<InputProps>(), {
   modelValue: "",
   type: "text",
   size: "md",
-  disabled: false,
+  disabled: undefined,
   readonly: false,
+  error: undefined,
+  label: undefined,
+  id: undefined,
 });
 
 const emit = defineEmits<InputEmits>();
 
 const ns = useNamespace("input");
 
-const generatedId = useId();
-const inputId = computed(() => props.id || `bjj-input-${generatedId}`);
+const formControl = useFormControl({
+  id: props.id,
+  disabled: props.disabled,
+  error: props.error,
+});
 
 const classes = computed(() => [
   ns.b(),
   ns.m(props.size),
-  ns.is("disabled", props.disabled),
-  ns.is("error", !!props.error),
+  ns.is("disabled", formControl.disabled.value),
+  ns.is("error", formControl.hasError.value),
 ]);
 
 const handleInput = (event: Event) => {
@@ -32,30 +39,50 @@ const handleInput = (event: Event) => {
 
 const handleFocus = (event: FocusEvent) => emit("focus", event);
 const handleBlur = (event: FocusEvent) => emit("blur", event);
+
+// Check if legacy props are used
+const hasLegacyProps = computed(() => !!props.label || !!props.error);
 </script>
 
 <template>
-  <div :class="ns.e('wrapper')">
-    <label v-if="label" :for="inputId" :class="ns.e('label')">
+  <div v-if="hasLegacyProps" :class="ns.e('wrapper')">
+    <label v-if="label" :for="formControl.id.value" :class="ns.e('label')">
       {{ label }}
     </label>
     <input
-      :id="inputId"
+      :id="formControl.id.value"
       :class="classes"
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"
-      :disabled="disabled"
+      :disabled="formControl.disabled.value"
       :readonly="readonly"
-      :aria-invalid="!!error"
+      :aria-invalid="formControl.hasError.value ? 'true' : undefined"
+      :aria-describedby="formControl.ariaDescribedBy.value"
       @input="handleInput"
       @focus="handleFocus"
       @blur="handleBlur"
     />
-    <div v-if="error" :class="ns.e('error-message')" role="alert">
+    <div v-if="error" :id="formControl.messageId.value" :class="ns.e('error-message')" role="alert">
       {{ error }}
     </div>
   </div>
+
+  <input
+    v-else
+    :id="formControl.id.value"
+    :class="classes"
+    :type="type"
+    :value="modelValue"
+    :placeholder="placeholder"
+    :disabled="formControl.disabled.value"
+    :readonly="readonly"
+    :aria-invalid="formControl.hasError.value ? 'true' : undefined"
+    :aria-describedby="formControl.ariaDescribedBy.value"
+    @input="handleInput"
+    @focus="handleFocus"
+    @blur="handleBlur"
+  />
 </template>
 
 <style>
@@ -89,7 +116,7 @@ const handleBlur = (event: FocusEvent) => emit("blur", event);
 }
 
 .bjj-input::placeholder {
-  color: var(--bjj-colors-border); /* Placeholder needs a token, using border or some muted text */
+  color: var(--bjj-colors-border);
 }
 
 .bjj-input.is-disabled {
