@@ -21,7 +21,7 @@
     "dev": "vite build --watch",
     "test": "vitest run",
     "lint": "eslint . --ext .vue,.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {},
   "peerDependencies": {
