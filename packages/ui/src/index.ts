@@ -8,4 +8,5 @@ export * from "./components/radio";
 export * from "./components/switch";
 export * from "./components/radio-group";
 export * from "./components/checkbox-group";
+export * from "./components/dialog";
 export * from "./composables";
