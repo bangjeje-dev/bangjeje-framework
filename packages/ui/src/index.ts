@@ -11,4 +11,5 @@ export * from "./components/checkbox-group";
 export * from "./components/dialog";
 export * from "./components/popover";
 export * from "./components/select";
+export * from "./components/tooltip";
 export * from "./composables";
