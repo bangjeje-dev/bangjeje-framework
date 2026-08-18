@@ -49,7 +49,9 @@ export default defineComponent({
       const vnode = defaultSlot[0];
 
       return cloneVNode(vnode, {
-        ref: innerRef,
+        ref: (el: any) => {
+          innerRef.value = el?.$el || el;
+        },
         onMouseenter: handleMouseEnter,
         onMouseleave: handleMouseLeave,
         onFocusin: handleFocusIn,

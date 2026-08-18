@@ -6,6 +6,7 @@
       ref="contentRef"
       :class="ns.b()"
       role="tooltip"
+      style="position: absolute; visibility: hidden"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
